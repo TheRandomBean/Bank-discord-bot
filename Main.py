@@ -56,7 +56,7 @@ async def open_account(ctx):
 )
     else:
         await ctx.send(embed = discord.Embed(
-            title='**Error #0001!**',
+            title='**Error!**',
             description="You already have an account! Use '!balance' to see your account balance.",
             colour=discord.Colour.red())
 )
@@ -142,6 +142,18 @@ async def deposit(ctx, amount: int):
             description=f"You do not have an account! Use '!open_account' to create an account!",
             color=discord.Color.red()
         ))
+@bot.command()
+@is_allowed_role("--C Suite--")
+async def add_shares(ctx, user: discord.Member, amount: int):
+    user_id = str(user.id)
+    if user_id in shares:
+        shares[user_id] += amount
+    else:
+        shares[user_id] = amount
+    await ctx.send(embed= discord.Embed(
+        title="**Added Shares**",
+        description=f"Added {amount} shares to {user.mention}'s account.",
+        color=discord.Colo.red()))
 
 
 @bot.command()
@@ -149,9 +161,17 @@ async def balance(ctx):
     user_id = str(ctx.author.id)
     if user_id in accounts:
         total_balance = accounts[user_id]
+        if user_id in shares:
+            shares_balance = shares[user_id]
+        else:
+            shares_balance = 0
+        
         embed = discord.Embed(
             title="**Balance!**",
-            description=f"Your Balance: ${accounts[user_id]}",
+            description=f"""
+            Your Balance: ${accounts[user_id]}
+            Your Shares: {shares_balance} shares.
+            """,
             color=discord.Color.blue()
         )
         await ctx.send(embed=embed)
@@ -161,7 +181,6 @@ async def balance(ctx):
 
             title = "**Error!**",
             description=f"You do not have an account! Use '!open_account' to create an account!",
-            color=discord.Color.red()
-        ))
+            color=discord.Color.red()))
 
 bot.run(my_secret)
