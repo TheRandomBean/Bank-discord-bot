@@ -52,13 +52,13 @@ async def open_account(ctx):
         await ctx.send(embed = discord.Embed(
             title='**Account opened successfully',
             desription="Your account was opened successfully, $100 was deposited  into your account automaticly",
-            color=discord.Color.green())
+            colour=discord.Color.green())
 )
     else:
         await ctx.send(embed = discord.Embed(
             title='**Error #0001!**',
             desription="You already have an account! Use '!balance' to see your account balance.",
-            color=discord.Color.red())
+            colour=discord.Color.red())
 )
 
 @bot.command()
