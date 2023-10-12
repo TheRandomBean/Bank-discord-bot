@@ -51,14 +51,14 @@ async def open_account(ctx):
         save_accounts()  # Save the updated account data to the CSV file
         await ctx.send(embed = discord.Embed(
             title='**Account opened successfully',
-            desription="Your account was opened successfully, $100 was deposited  into your account automaticly",
-            colour=discord.Color.green())
+            description="Your account was opened successfully, $100 was deposited  into your account automaticly",
+            color=discord.Color.green())
 )
     else:
         await ctx.send(embed = discord.Embed(
             title='**Error #0001!**',
-            desription="You already have an account! Use '!balance' to see your account balance.",
-            colour=discord.Color.red())
+            description="You already have an account! Use '!balance' to see your account balance.",
+            colour=discord.Colour.red())
 )
 
 @bot.command()
