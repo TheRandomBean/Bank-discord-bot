@@ -15,6 +15,8 @@ def is_allowed_role(role_name):
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
+shares = {}
+
 # cash balance dictionary
 cash_balance = {}
 
@@ -56,7 +58,7 @@ async def open_account(ctx):
 )
     else:
         await ctx.send(embed = discord.Embed(
-            title='**Error #0001!**',
+            title='**Error!**',
             description="You already have an account! Use '!balance' to see your account balance.",
             colour=discord.Colour.red())
 )
@@ -70,6 +72,7 @@ async def assistance(ctx):
     !balance - *Displays your current balance.*
     !withdraw - *Withdraws money from your account.*
     !deposit - *Deposits money into your account.*
+    !add_shares - *So bank employees can add your shares you buy into your account*
     
     """,
     color=discord.Color.dark_blue()
@@ -142,6 +145,31 @@ async def deposit(ctx, amount: int):
             description=f"You do not have an account! Use '!open_account' to create an account!",
             color=discord.Color.red()
         ))
+@bot.command()
+@is_allowed_role("--C Suite--")
+async def add_shares(ctx, user: discord.Member, amount: int):
+    user_id = str(user.id)
+    if user_id in accounts:
+        if user_id in shares:
+            shares[user_id] += amount
+        else:
+            shares[user_id] = amount
+        await ctx.send(embed= discord.Embed(
+            title="**Added Shares**",
+            description=f"Added {amount} shares to {user.mention}'s account.",
+            color=discord.Color.green()))
+    else:
+        await ctx.send(embed= dscord.Embed(
+            title="**Error!**",
+            description=f"*{user.mention} does not have an account, they need to use `!open_account` to create oe.*",
+            color=discord.Color.red()))
+else:
+    await ctx.send(embed= discord.Embed(
+        title="**Error!**",
+        description="*You do not have the required role to use this command.",
+        color=discord.Color.red()))
+
+
 
 
 @bot.command()
@@ -149,9 +177,17 @@ async def balance(ctx):
     user_id = str(ctx.author.id)
     if user_id in accounts:
         total_balance = accounts[user_id]
+        if user_id in shares:
+            shares_balance = shares[user_id]
+        else:
+            shares_balance = 0
+        
         embed = discord.Embed(
             title="**Balance!**",
-            description=f"Your Balance: ${accounts[user_id]}",
+            description=f"""
+            Your Balance: ${accounts[user_id]}
+            Your Shares: {shares_balance} shares.
+            """,
             color=discord.Color.blue()
         )
         await ctx.send(embed=embed)
@@ -161,7 +197,6 @@ async def balance(ctx):
 
             title = "**Error!**",
             description=f"You do not have an account! Use '!open_account' to create an account!",
-            color=discord.Color.red()
-        ))
+            color=discord.Color.red()))
 
 bot.run(my_secret)
