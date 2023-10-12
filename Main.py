@@ -145,6 +145,7 @@ async def deposit(ctx, amount: int):
             description=f"You do not have an account! Use '!open_account' to create an account!",
             color=discord.Color.red()
         ))
+
 @bot.command()
 @is_allowed_role("--C Suite--")
 async def add_shares(ctx, user: discord.Member, amount: int):
