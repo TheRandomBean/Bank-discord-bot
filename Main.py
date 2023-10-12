@@ -6,6 +6,13 @@ my_secret = os.environ['Token']
 intents = discord.Intents.default()
 intents.message_content = True
 
+# Allows certain users to use commands
+def is_allowed_role(role_name):
+    def predicate(ctx):
+        role = discord.utils.get(ctx.author.roles, name=role_name)
+        return role is not None
+    return commands.check(predicate)
+
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 # cash balance dictionary
@@ -135,6 +142,21 @@ async def deposit(ctx, amount: int):
             description=f"You do not have an account! Use '!open_account' to create an account!",
             color=discord.Color.red()
         ))
+@bot.command()
+@is_allowed_role('--Bank Personnel--')
+async def Addshares(ctx, user: discord.Member, amount: int):
+    user_id = str(user.id)
+    if user_id in shares:
+        shares[user_id] += amount
+    else:
+        shares[user_id] = amount
+#does this work???????
+    transaction_log.append(f"{ctx.author.name} added {amount} shares to {user.name}'s account.")
+    with open('transaction_logs.csv', mode='a', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow([f"{ctx.author.name} added {amount} shares to {user.name}'s account."])
+#Monkey please look and fix if needed
+
 
 @bot.command()
 async def balance(ctx):
@@ -148,6 +170,8 @@ async def balance(ctx):
         await ctx.send(embed=embed)
     else:
         await ctx.send(embed = discord.Embed(
+
+
             title = "**Error!**",
             description=f"You do not have an account! Use '!open_account' to create an account!",
             color=discord.Color.red()
