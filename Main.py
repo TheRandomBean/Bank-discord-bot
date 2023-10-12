@@ -8,6 +8,9 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
+# cash balance dictionary
+cash_balance = {}
+
 # Load existing account data from a CSV file
 accounts = {}
 with open('accounts.csv', mode='r') as file:
@@ -39,12 +42,20 @@ async def open_account(ctx):
     if user_id not in accounts:
         accounts[user_id] = 0
         save_accounts()  # Save the updated account data to the CSV file
-        await ctx.send("Account opened successfully!")
+        await ctx.send(embed = discord.Embed(
+            title='**Account opened successfully',
+            desription="Your account was opened successfully, $100 was deposited  into your account automaticly",
+            color=discord.Color.green())
+)
     else:
-        await ctx.send("You already have an account!")
+        await ctx.send(embed = discord.Embed(
+            title='**Error #0001!**',
+            desription="You already have an account! Use '!balance' to see your account balance.",
+            color=discord.Color.Red())
+)
 
 @bot.command()
-async def help1(ctx):
+async def assistance(ctx):
   embed = discord.Embed(
     title="**Commands:**",
     description="""
