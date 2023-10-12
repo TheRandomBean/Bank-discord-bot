@@ -162,9 +162,17 @@ async def Addshares(ctx, user: discord.Member, amount: int):
 async def balance(ctx):
     user_id = str(ctx.author.id)
     if user_id in accounts:
+        total_balance = accounts[user_id]
+        if user_id in shares:
+            shares_balance = shares[user.id]
+        else:
+            shares_balance = 0
         embed = discord.Embed(
             title="**Balance!**",
-            description=f"Your Balance: ${accounts[user_id]}",
+            description=f"""
+Your Balance: ${accounts[user_id]}
+Your Shares: {shares_balance} shares.
+""",
             color=discord.Color.blue()
         )
         await ctx.send(embed=embed)
