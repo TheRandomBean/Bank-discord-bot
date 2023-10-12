@@ -142,20 +142,6 @@ async def deposit(ctx, amount: int):
             description=f"You do not have an account! Use '!open_account' to create an account!",
             color=discord.Color.red()
         ))
-@bot.command()
-@is_allowed_role('--Bank Personnel--')
-async def Addshares(ctx, user: discord.Member, amount: int):
-    user_id = str(user.id)
-    if user_id in shares:
-        shares[user_id] += amount
-    else:
-        shares[user_id] = amount
-#does this work???????
-    transaction_log.append(f"{ctx.author.name} added {amount} shares to {user.name}'s account.")
-    with open('transaction_logs.csv', mode='a', newline='') as file:
-    writer = csv.writer(file)
-    writer.writerow([f"{ctx.author.name} added {amount} shares to {user.name}'s account."])
-#Monkey please look and fix if needed
 
 
 @bot.command()
@@ -163,16 +149,9 @@ async def balance(ctx):
     user_id = str(ctx.author.id)
     if user_id in accounts:
         total_balance = accounts[user_id]
-        if user_id in shares:
-            shares_balance = shares[user.id]
-        else:
-            shares_balance = 0
         embed = discord.Embed(
             title="**Balance!**",
-            description=f"""
-Your Balance: ${accounts[user_id]}
-Your Shares: {shares_balance} shares.
-""",
+            description=f"Your Balance: ${accounts[user_id]}",
             color=discord.Color.blue()
         )
         await ctx.send(embed=embed)
