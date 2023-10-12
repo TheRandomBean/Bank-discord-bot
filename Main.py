@@ -164,11 +164,13 @@ async def add_shares(ctx, user: discord.Member, amount: int):
             title="**Error!**",
             description=f"*{user.mention} does not have an account, they need to use `!open_account` to create oe.*",
             color=discord.Color.red()))
-else:
+@add_shares.error
+async def add_shares_error(ctx, error):
+  if isinstance(error, commands.CheckFailure):
     await ctx.send(embed= discord.Embed(
-        title="**Error!**",
-        description="*You do not have the required role to use this command.",
-        color=discord.Color.red()))
+      title="**Error!**",
+      description="*You do not have the required role to use this command.*",
+      color=discord.Color.red()))
 
 
 
