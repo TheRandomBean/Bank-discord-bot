@@ -15,6 +15,8 @@ def is_allowed_role(role_name):
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
+shares = {}
+
 # cash balance dictionary
 cash_balance = {}
 
@@ -70,6 +72,7 @@ async def assistance(ctx):
     !balance - *Displays your current balance.*
     !withdraw - *Withdraws money from your account.*
     !deposit - *Deposits money into your account.*
+    !add_shares - *So bank employees can add your shares you buy into your account*
     
     """,
     color=discord.Color.dark_blue()
@@ -146,14 +149,27 @@ async def deposit(ctx, amount: int):
 @is_allowed_role("--C Suite--")
 async def add_shares(ctx, user: discord.Member, amount: int):
     user_id = str(user.id)
-    if user_id in shares:
-        shares[user_id] += amount
+    if user_id in accounts:
+        if user_id in shares:
+            shares[user_id] += amount
+        else:
+            shares[user_id] = amount
+        await ctx.send(embed= discord.Embed(
+            title="**Added Shares**",
+            description=f"Added {amount} shares to {user.mention}'s account.",
+            color=discord.Color.green()))
     else:
-        shares[user_id] = amount
+        await ctx.send(embed= dscord.Embed(
+            title="**Error!**",
+            description=f"*{user.mention} does not have an account, they need to use `!open_account` to create oe.*",
+            color=discord.Color.red()))
+else:
     await ctx.send(embed= discord.Embed(
-        title="**Added Shares**",
-        description=f"Added {amount} shares to {user.mention}'s account.",
-        color=discord.Colo.red()))
+        title="**Error!**",
+        description="*You do not have the required role to use this command.",
+        color=discord.Color.red()))
+
+
 
 
 @bot.command()
