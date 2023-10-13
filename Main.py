@@ -145,6 +145,46 @@ async def deposit(ctx, amount: int):
             description=f"You do not have an account! Use '!open_account' to create an account!",
             color=discord.Color.red()
         ))
+@bot.command()
+async def shares(ctx):
+    total_shares = 5000  # Total shares available
+    taken_shares = 95000
+
+    price_per_share = 6  # Set the price per share
+
+    available_shares = total_shares - taken_shares
+
+    embed = discord.Embed(
+        title="Shares Information",
+        color=discord.Color.blue()
+    )
+    embed.add_field(name="Total Shares", value=total_shares, inline=True)
+    embed.add_field(name="Taken Shares", value=taken_shares, inline=True)
+    embed.add_field(name="Available Shares", value=available_shares, inline=True)
+    embed.add_field(name="Price Per Share", value=f"${price_per_share}", inline=True)
+
+    await ctx.send(embed=embed)
+
+@bot.command()
+@is_allowed_role("--C Suite--")
+async def sharesmodify(ctx, field: str, value: int):
+    if field.lower() == "total":
+        total_shares = value
+        await ctx.send(embed = discord.Embed(title="**Updated!**", description=f"Total Shares updated to {total_shares}'", color=discord.Color.green()))
+    elif field.lower() == "taken":
+        taken_shares = value
+        await ctx.send(embed = discord.Embed(title="**Updated!**", description=f"Taken Shares updated too: {taken_shares}'", color=discord.Color.green()))
+    elif field.lower() == "price":
+        price_per_share = value
+        await ctx.send(embed = discord.Embed(title="**Updated!**", description=f"Price Per Shares updated to {price_per_shares}'", color=discord.Color.green()))
+    else:
+        await ctx.send(embed = discord.Embed(title="**Error!**", description="Invalid field. Use 'total' 'taken' or 'price'", color=discord.Color.red()))
+
+@sharesmodify.error
+async def sharesmodify_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send("Usage: !sharesmodify [field] [value]")
+
 
 @bot.command()
 @is_allowed_role("--C Suite--")
